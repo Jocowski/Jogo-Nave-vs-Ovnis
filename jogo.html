@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nave VS Ovnis</title>
+
+    <script src="animacao.js"></script>
+    <script src="bola.js"></script>
+
+</head>
+
+<body>
+
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        
+        let canvas = document.getElementById("canvas");
+        let context = canvas.getContext("2d");
+
+        let bola1 = new Bola(context);
+        bola1.x = 100;
+        bola1.y = 100;
+        bola1.velocidadeX = 20;
+        bola1.velocidadeY = -10;
+        bola1.cor = "red";
+        bola1.raio = 20;
+
+        let bola2 = new Bola(context);
+        bola2.x = 300;
+        bola2.y = 300;
+        bola2.velocidadeX = -10;
+        bola2.velocidadeY = -20;
+        bola2.cor = "blue";
+        bola2.raio = 30;
+
+        let animacao = new Animacao(context);
+        animacao.novoSprite(bola1);
+        animacao.novoSprite(bola2);
+
+        animacao.ligar();
+   
+    </script>
+
+</body>
+
+</html>
