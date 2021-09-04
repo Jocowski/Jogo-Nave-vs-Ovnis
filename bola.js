@@ -15,7 +15,7 @@ Bola.prototype = {
 
     atualizar: function() {
 
-        if ((this.x < this.raio) || (this.x > this.context.canvas.width - this.raio)) {
+        /*if ((this.x < this.raio) || (this.x > this.context.canvas.width - this.raio)) {
 
             this.velocidadeX *= -1;
 
@@ -25,7 +25,7 @@ Bola.prototype = {
 
             this.velocidadeY *= -1;
 
-        }
+        }*/
 
         this.x += this.velocidadeX;
         this.y += this.velocidadeY;
@@ -44,4 +44,5 @@ Bola.prototype = {
         this.context.restore();
 
     }
+
 }

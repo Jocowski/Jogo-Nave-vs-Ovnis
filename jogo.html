@@ -11,7 +11,9 @@
     <title>Nave VS Ovnis</title>
 
     <script src="animacao.js"></script>
+    <script src="teclado.js"></script>
     <script src="bola.js"></script>
+    <script src="heroi.js"></script>
 
 </head>
 
@@ -24,25 +26,20 @@
         let canvas = document.getElementById("canvas");
         let context = canvas.getContext("2d");
 
-        let bola1 = new Bola(context);
-        bola1.x = 100;
-        bola1.y = 100;
-        bola1.velocidadeX = 20;
-        bola1.velocidadeY = -10;
-        bola1.cor = "red";
-        bola1.raio = 20;
-
-        let bola2 = new Bola(context);
-        bola2.x = 300;
-        bola2.y = 300;
-        bola2.velocidadeX = -10;
-        bola2.velocidadeY = -20;
-        bola2.cor = "blue";
-        bola2.raio = 30;
-
+        let teclado = new Teclado(document);
         let animacao = new Animacao(context);
-        animacao.novoSprite(bola1);
-        animacao.novoSprite(bola2);
+
+        let heroi = new Heroi(context, teclado, animacao);
+        heroi.x = 100;
+        heroi.y = 100;
+        heroi.tamanho = 30;
+        animacao.novoSprite(heroi);
+
+        teclado.disparou(ESPACO, function() {
+
+            heroi.atirar();
+
+        });
 
         animacao.ligar();
    
