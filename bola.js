@@ -15,7 +15,7 @@ Bola.prototype = {
 
     atualizar: function() {
 
-        /*if ((this.x < this.raio) || (this.x > this.context.canvas.width - this.raio)) {
+        if ((this.x < this.raio) || (this.x > this.context.canvas.width - this.raio)) {
 
             this.velocidadeX *= -1;
 
@@ -25,7 +25,7 @@ Bola.prototype = {
 
             this.velocidadeY *= -1;
 
-        }*/
+        }
 
         this.x += this.velocidadeX;
         this.y += this.velocidadeY;
@@ -42,6 +42,43 @@ Bola.prototype = {
         this.context.fill();
 
         this.context.restore();
+
+    },
+
+    retangulosColisao: function() {
+
+        return [{
+
+            x: this.x - this.raio, 
+            y: this.y - this.raio,
+            largura: this.raio * 2,
+            altura: this.raio * 2
+
+        }];
+
+    },
+    
+    colidiuCom: function(sprite) {
+
+        if (this.x < sprite.x) {
+
+            this.velocidadeX = - Math.abs(this.velocidadeX);
+
+        } else {
+
+            this.velocidadeX = Math.abs(this.velocidadeX);
+
+        }
+
+        if (this.y < sprite.y) {
+
+            this.velocidadeY = - Math.abs(this.velocidadeY);
+
+        } else {
+
+            this.velocidadeY = Math.abs(this.velocidadeY);
+
+        }
 
     }
 

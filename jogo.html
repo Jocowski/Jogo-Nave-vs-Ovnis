@@ -13,7 +13,8 @@
     <script src="animacao.js"></script>
     <script src="teclado.js"></script>
     <script src="spritesheet.js"></script>
-    <script src="sonic.js"></script>
+    <script src="colisor.js"></script>
+    <script src="bola.js"></script>
 
 </head>
 
@@ -29,17 +30,47 @@
         let teclado = new Teclado(document);
         let animacao = new Animacao(context);
 
-        let imgSonic = new Image();
-        imgSonic.src = "img/spritesheet.png";
+        let b1 = new Bola(context);
+        b1.x = 200;
+        b1.y = 200;
+        b1.velocidadeX = 10;
+        b1.velocidadeY = -5;
+        b1.cor = "blue";
+        b1.raio = 20;
 
-        let sonic = new Sonic(context, teclado, imgSonic);
-        sonic.x = 0;
-        sonic.y = 100;
-        animacao.novoSprite(sonic);
+        let b2 = new Bola(context);
+        b2.x = 300;
+        b2.y = 300;
+        b2.velocidadeX = -5;
+        b2.velocidadeY = 10;
+        b2.cor = "red";
+        b2.raio = 30;
 
-        imgSonic.onload = function() {
+        let colisor = new Colisor();
+        colisor.novoSprite(b1);
+        colisor.novoSprite(b2);
 
-            animacao.ligar();
+        /*colisor.aoColidir = function(s1, s2) {
+
+            alert("Colidiu :D");
+
+        }*/
+
+        requestAnimationFrame(animar);
+
+        function animar() {
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            b1.atualizar();
+            b2.atualizar();
+
+            b1.desenhar();
+            b2.desenhar();
+
+            colisor.processar();
+
+            requestAnimationFrame(animar);
 
         }
    
