@@ -16,6 +16,7 @@
     <script src="colisor.js"></script>
     <script src="fundo.js"></script>
     <script src="nave.js"></script>
+    <script src="tiro.js"></script>
 
 </head>
 
@@ -69,13 +70,13 @@
             let fundoEstrelas = new Fundo(context, imgEstrelas);
             let fundoNuvens = new Fundo(context, imgNuvens);
 
-            let nave = new Nave(context, teclado, imgNave);
+            let nave = new Nave(context, teclado, animacao, imgNave);
 
             fundoEspaco.velocidade = 3;
             fundoEstrelas.velocidade = 7;
             fundoNuvens.velocidade = 10;
 
-            nave.x = (canvas.width / 2) - (imgNave.width / 2);
+            nave.x = canvas.width / 2 - imgNave.width / 2;
             nave.y = canvas.height - imgNave.height;
             nave.velocidade = 5;
 
@@ -85,6 +86,12 @@
             animacao.novoSprite(nave);
 
             animacao.ligar();
+
+            teclado.disparou(ESPACO, function() {
+
+                nave.atirar();
+
+            });
 
         }
    

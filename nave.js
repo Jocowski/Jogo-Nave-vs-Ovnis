@@ -1,4 +1,4 @@
-function Nave(context, teclado, imagem) {
+function Nave(context, teclado, animacao, imagem) {
 
     this.context = context;
     this.teclado = teclado;
@@ -43,6 +43,14 @@ Nave.prototype = {
     desenhar: function() {
 
         this.context.drawImage(this.imagem, this.x, this.y, this.imagem.width, this.imagem.height);
+
+    },
+
+    atirar: function() {
+
+        let tiro = new Tiro(this.context, this);
+
+        this.animacao.novoSprite(tiro);
 
     }
 
