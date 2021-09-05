@@ -14,7 +14,7 @@
     <script src="teclado.js"></script>
     <script src="spritesheet.js"></script>
     <script src="colisor.js"></script>
-    <script src="bola.js"></script>
+    <script src="fundo.js"></script>
 
 </head>
 
@@ -23,54 +23,54 @@
     <canvas id="canvas" width="500" height="500"></canvas>
 
     <script>
-        
-        let canvas = document.getElementById("canvas");
-        let context = canvas.getContext("2d");
 
-        let teclado = new Teclado(document);
-        let animacao = new Animacao(context);
+        let imgEspaco = new Image();
+        imgEspaco.src = "img/fundo-espaco.png";
 
-        let b1 = new Bola(context);
-        b1.x = 200;
-        b1.y = 200;
-        b1.velocidadeX = 10;
-        b1.velocidadeY = -5;
-        b1.cor = "blue";
-        b1.raio = 20;
+        let imgEstrelas = new Image();
+        imgEstrelas.src = "img/fundo-estrelas.png";
 
-        let b2 = new Bola(context);
-        b2.x = 300;
-        b2.y = 300;
-        b2.velocidadeX = -5;
-        b2.velocidadeY = 10;
-        b2.cor = "red";
-        b2.raio = 30;
+        let imgNuvens = new Image();
+        imgNuvens.src = "img/fundo-nuvens.png";
 
-        let colisor = new Colisor();
-        colisor.novoSprite(b1);
-        colisor.novoSprite(b2);
+        let carregadas = 0;
+        let total = 3;
 
-        /*colisor.aoColidir = function(s1, s2) {
+        imgEspaco.onload = carregando;
+        imgEstrelas.onload = carregando;
+        imgNuvens.onload = carregando;
 
-            alert("Colidiu :D");
+        function carregando() {
 
-        }*/
+            carregadas++;
 
-        requestAnimationFrame(animar);
+            if (carregadas == total) {
 
-        function animar() {
+                iniciar();
 
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            }
 
-            b1.atualizar();
-            b2.atualizar();
+        }
 
-            b1.desenhar();
-            b2.desenhar();
+        function iniciar() {
 
-            colisor.processar();
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
 
-            requestAnimationFrame(animar);
+            let fundoEspaco = new Fundo(context, imgEspaco);
+            let fundoEstrelas = new Fundo(context, imgEstrelas);
+            let fundoNuvens = new Fundo(context, imgNuvens);
+
+            fundoEspaco.velocidade = 3;
+            fundoEstrelas.velocidade = 7;
+            fundoNuvens.velocidade = 10;
+
+            let animacao = new Animacao(context);
+            animacao.novoSprite(fundoEspaco);
+            animacao.novoSprite(fundoEstrelas);
+            animacao.novoSprite(fundoNuvens);
+
+            animacao.ligar();
 
         }
    
