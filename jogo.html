@@ -12,8 +12,8 @@
 
     <script src="animacao.js"></script>
     <script src="teclado.js"></script>
-    <script src="bola.js"></script>
-    <script src="heroi.js"></script>
+    <script src="spritesheet.js"></script>
+    <script src="sonic.js"></script>
 
 </head>
 
@@ -29,19 +29,19 @@
         let teclado = new Teclado(document);
         let animacao = new Animacao(context);
 
-        let heroi = new Heroi(context, teclado, animacao);
-        heroi.x = 100;
-        heroi.y = 100;
-        heroi.tamanho = 30;
-        animacao.novoSprite(heroi);
+        let imgSonic = new Image();
+        imgSonic.src = "img/spritesheet.png";
 
-        teclado.disparou(ESPACO, function() {
+        let sonic = new Sonic(context, teclado, imgSonic);
+        sonic.x = 0;
+        sonic.y = 100;
+        animacao.novoSprite(sonic);
 
-            heroi.atirar();
+        imgSonic.onload = function() {
 
-        });
+            animacao.ligar();
 
-        animacao.ligar();
+        }
    
     </script>
 
