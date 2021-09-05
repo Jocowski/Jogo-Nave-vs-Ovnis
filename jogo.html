@@ -15,6 +15,7 @@
     <script src="spritesheet.js"></script>
     <script src="colisor.js"></script>
     <script src="fundo.js"></script>
+    <script src="nave.js"></script>
 
 </head>
 
@@ -33,12 +34,16 @@
         let imgNuvens = new Image();
         imgNuvens.src = "img/fundo-nuvens.png";
 
+        let imgNave = new Image();
+        imgNave.src = "img/nave.png";
+
         let carregadas = 0;
-        let total = 3;
+        let total = 4;
 
         imgEspaco.onload = carregando;
         imgEstrelas.onload = carregando;
         imgNuvens.onload = carregando;
+        imgNave.onload = carregando;
 
         function carregando() {
 
@@ -57,18 +62,27 @@
             let canvas = document.getElementById("canvas");
             let context = canvas.getContext("2d");
 
+            let animacao = new Animacao(context);
+            let teclado = new Teclado(document);
+
             let fundoEspaco = new Fundo(context, imgEspaco);
             let fundoEstrelas = new Fundo(context, imgEstrelas);
             let fundoNuvens = new Fundo(context, imgNuvens);
+
+            let nave = new Nave(context, teclado, imgNave);
 
             fundoEspaco.velocidade = 3;
             fundoEstrelas.velocidade = 7;
             fundoNuvens.velocidade = 10;
 
-            let animacao = new Animacao(context);
+            nave.x = (canvas.width / 2) - (imgNave.width / 2);
+            nave.y = canvas.height - imgNave.height;
+            nave.velocidade = 5;
+
             animacao.novoSprite(fundoEspaco);
             animacao.novoSprite(fundoEstrelas);
             animacao.novoSprite(fundoNuvens);
+            animacao.novoSprite(nave);
 
             animacao.ligar();
 
