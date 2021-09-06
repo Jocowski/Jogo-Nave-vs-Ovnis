@@ -1,6 +1,7 @@
 function Colisor() {
 
     this.sprites = [];
+    this.spritesExcluir = [];
     this.aoColidir = null;
 
 }
@@ -10,6 +11,13 @@ Colisor.prototype = {
     novoSprite: function(sprite) {
 
         this.sprites.push(sprite);
+        sprite.colisor = this;
+
+    },
+
+    excluirSprite: function(sprite) {
+
+        this.spritesExcluir.push(sprite);
 
     },
 
@@ -42,7 +50,7 @@ Colisor.prototype = {
 
                 }
 
-                if (!((jaTestados[id1.indexOf(id2)] >= 0) || (jaTestados[id2.indexOf(id1)] >= 0))) {
+                if (!((jaTestados[id1].indexOf(id2) >= 0) || (jaTestados[id2].indexOf(id1) >= 0))) {
 
                     this.testarColisao(this.sprites[i], this.sprites[j]);
 
@@ -54,6 +62,28 @@ Colisor.prototype = {
             }
 
         }
+
+        this.processarExclusoes();
+
+    },
+
+    processarExclusoes: function() {
+
+        let novoArray = [];
+
+        for (i in this.sprites) {
+
+            if (this.spritesExcluir.indexOf(this.sprites[i]) == -1) {
+
+                novoArray.push(this.sprites[i]);
+
+            }
+
+        }
+
+        this.spritesExcluir = [];
+
+        this.sprites = novoArray;
 
     },
 

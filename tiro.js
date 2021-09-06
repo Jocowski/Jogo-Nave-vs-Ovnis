@@ -1,6 +1,8 @@
-function Tiro(context, nave) {
+function Tiro(context, animacao, colisor, nave) {
 
     this.context = context;
+    this.animacao = animacao;
+    this.colisor = colisor;
     this.nave = nave;
 
     this.largura = 4;
@@ -18,6 +20,13 @@ Tiro.prototype = {
 
         this.y -= this.velocidade;
 
+        if (this.y < - this.altura) {
+
+            this.animacao.excluirSprite(this);
+            this.colisor.excluirSprite(this);
+
+        }
+
     },
 
     desenhar: function() {
@@ -28,6 +37,27 @@ Tiro.prototype = {
         this.context.fillRect(this.x, this.y, this.largura, this.altura);
 
         this.context.restore();
+
+    },
+
+    retangulosColisao: function() {
+
+        return [
+            
+            {
+                x: this.x, 
+                y: this.y, 
+                largura: this.largura, 
+                altura: this.altura
+            }
+
+        ];
+
+    },
+    
+    colidiuCom: function(sprite) {
+
+
 
     }
 

@@ -76,7 +76,7 @@
             let fundoEstrelas = new Fundo(context, imgEstrelas);
             let fundoNuvens = new Fundo(context, imgNuvens);
 
-            let nave = new Nave(context, animacao, teclado, imgNave);
+            let nave = new Nave(context, animacao, teclado, colisor, imgNave);
 
             fundoEspaco.velocidade = 3;
             fundoEstrelas.velocidade = 7;
@@ -93,13 +93,15 @@
 
             colisor.novoSprite(nave);
 
+            animacao.novoProcessamento(colisor);
+
             animacao.ligar();
 
             setInterval(novoOvni, 1000);
 
             function novoOvni() {
 
-                let ovni = new Ovni(context, imgOvni);
+                let ovni = new Ovni(context, animacao, colisor, imgOvni);
 
                 ovni.velocidade = Math.floor(5 + Math.random() * (20 - 5 + 1));
                 ovni.x = Math.floor(Math.random() * (canvas.width - imgOvni.width + 1));
