@@ -12,11 +12,12 @@
 
     <script src="animacao.js"></script>
     <script src="teclado.js"></script>
-    <script src="spritesheet.js"></script>
     <script src="colisor.js"></script>
+    <script src="spritesheet.js"></script>
     <script src="fundo.js"></script>
     <script src="nave.js"></script>
     <script src="tiro.js"></script>
+    <script src="ovni.js"></script>
 
 </head>
 
@@ -38,13 +39,17 @@
         let imgNave = new Image();
         imgNave.src = "img/nave.png";
 
+        let imgOvni = new Image();
+        imgOvni.src = "img/ovni.png";
+
         let carregadas = 0;
-        let total = 4;
+        let total = 5;
 
         imgEspaco.onload = carregando;
         imgEstrelas.onload = carregando;
         imgNuvens.onload = carregando;
         imgNave.onload = carregando;
+        imgOvni.onload = carregando;
 
         function carregando() {
 
@@ -65,12 +70,13 @@
 
             let animacao = new Animacao(context);
             let teclado = new Teclado(document);
+            let colisor = new Colisor();
 
             let fundoEspaco = new Fundo(context, imgEspaco);
             let fundoEstrelas = new Fundo(context, imgEstrelas);
             let fundoNuvens = new Fundo(context, imgNuvens);
 
-            let nave = new Nave(context, teclado, animacao, imgNave);
+            let nave = new Nave(context, animacao, teclado, imgNave);
 
             fundoEspaco.velocidade = 3;
             fundoEstrelas.velocidade = 7;
@@ -85,7 +91,24 @@
             animacao.novoSprite(fundoNuvens);
             animacao.novoSprite(nave);
 
+            colisor.novoSprite(nave);
+
             animacao.ligar();
+
+            setInterval(novoOvni, 1000);
+
+            function novoOvni() {
+
+                let ovni = new Ovni(context, imgOvni);
+
+                ovni.velocidade = Math.floor(5 + Math.random() * (20 - 5 + 1));
+                ovni.x = Math.floor(Math.random() * (canvas.width - imgOvni.width + 1));
+                ovni.y = - imgOvni.height;
+
+                animacao.novoSprite(ovni);
+                colisor.novoSprite(ovni);
+
+            }
 
             teclado.disparou(ESPACO, function() {
 
