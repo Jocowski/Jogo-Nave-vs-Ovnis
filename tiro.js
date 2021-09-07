@@ -1,3 +1,8 @@
+let SOM_TIRO = new Audio();
+SOM_TIRO.src = "snd/tiro.mp3";
+SOM_TIRO.volume = 0.2;
+SOM_TIRO.load();
+
 function Tiro(context, animacao, colisor, nave) {
 
     this.context = context;
@@ -5,12 +10,15 @@ function Tiro(context, animacao, colisor, nave) {
     this.colisor = colisor;
     this.nave = nave;
 
-    this.largura = 4;
-    this.altura = 20;
-    this.x = nave.x + nave.imagem.width / 2 - this.largura / 2;
+    this.largura = 3;
+    this.altura = 10;
+    this.x = nave.x + 18;
     this.y = nave.y - this.altura;
-    this.velocidade = 10;
+    this.velocidade = 400;
     this.cor = "red";
+
+    SOM_TIRO.currentTime = 0.0;
+    SOM_TIRO.play();
 
 }
 
@@ -18,7 +26,7 @@ Tiro.prototype = {
 
     atualizar: function() {
 
-        this.y -= this.velocidade;
+        this.y -= this.velocidade * this.animacao.decorrido / 1000;
 
         if (this.y < - this.altura) {
 

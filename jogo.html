@@ -13,11 +13,13 @@
     <script src="animacao.js"></script>
     <script src="teclado.js"></script>
     <script src="colisor.js"></script>
-    <script src="spritesheet.js"></script>
     <script src="fundo.js"></script>
+    <script src="spritesheet.js"></script>
     <script src="nave.js"></script>
     <script src="tiro.js"></script>
     <script src="ovni.js"></script>
+    <script src="explosao.js"></script>
+    <script src="painel.js"></script>
 
 </head>
 
@@ -25,101 +27,325 @@
 
     <canvas id="canvas" width="500" height="500"></canvas>
 
+    <a id="link_jogar" href="javascript: iniciarJogo()">Jogar</a>
+
+    <style>
+
+        #link_jogar {
+
+            display: none;
+
+            color: yellow;
+            background: url(img/botao-jogar.png);
+
+            font-size: 20px;
+            font-family: sans-serif;
+
+            text-decoration: none;
+            text-shadow: 2px 2px 5px black;
+
+            position: absolute;
+            left: 220px;
+            top: 330px;
+        
+            width: 52px;
+            height: 26px;
+            padding: 23px 10px;
+
+        }
+    
+        </style>
+
     <script>
 
-        let imgEspaco = new Image();
-        imgEspaco.src = "img/fundo-espaco.png";
+        let canvas = document.getElementById("canvas");
+        let context = canvas.getContext("2d");
 
-        let imgEstrelas = new Image();
-        imgEstrelas.src = "img/fundo-estrelas.png";
+        let imagens;
+        let animacao;
+        let teclado;
+        let colisor;
+        let nave; 
+        let criadorInimigos;
+        let musicaAcao;
 
-        let imgNuvens = new Image();
-        imgNuvens.src = "img/fundo-nuvens.png";
-
-        let imgNave = new Image();
-        imgNave.src = "img/nave.png";
-
-        let imgOvni = new Image();
-        imgOvni.src = "img/ovni.png";
-
+        let totalImagens = 0;
         let carregadas = 0;
-        let total = 5;
 
-        imgEspaco.onload = carregando;
-        imgEstrelas.onload = carregando;
-        imgNuvens.onload = carregando;
-        imgNave.onload = carregando;
-        imgOvni.onload = carregando;
+        carregarImagens();
+        carregarMusicas();
 
-        function carregando() {
+        function carregarImagens() {
 
-            carregadas++;
+            imagens = {
 
-            if (carregadas == total) {
+                espaco: "fundo-espaco.png",
+                estrelas: "fundo-estrelas.png",
+                nuvens: "fundo-nuvens.png",
+                nave: "nave-spritesheet.png",
+                ovni: "ovni.png",
+                explosao: "explosao.png"
 
-                iniciar();
+            };
+
+            for (let i in imagens) {
+
+                let img = new Image();
+                img.src = "img/" + imagens[i];
+                img.onload = carregando;
+                totalImagens++;
+
+                imagens[i] = img;
 
             }
 
         }
 
-        function iniciar() {
+        function carregarMusicas() {
 
-            let canvas = document.getElementById("canvas");
-            let context = canvas.getContext("2d");
+            musicaAcao = new Audio();
+            musicaAcao.src = "snd/musica-acao.mp3";
+            musicaAcao.load();
+            musicaAcao.volume = 0.8;
+            musicaAcao.loop = true;
 
-            let animacao = new Animacao(context);
-            let teclado = new Teclado(document);
-            let colisor = new Colisor();
+        }
 
-            let fundoEspaco = new Fundo(context, imgEspaco);
-            let fundoEstrelas = new Fundo(context, imgEstrelas);
-            let fundoNuvens = new Fundo(context, imgNuvens);
+        function carregando() {
 
-            let nave = new Nave(context, animacao, teclado, colisor, imgNave);
+            context.save();
 
-            fundoEspaco.velocidade = 3;
-            fundoEstrelas.velocidade = 7;
-            fundoNuvens.velocidade = 10;
+            context.drawImage(imagens.espaco, 0, 0, canvas.width, canvas.height);
 
-            nave.x = canvas.width / 2 - imgNave.width / 2;
-            nave.y = canvas.height - imgNave.height;
-            nave.velocidade = 5;
+            context.fillStyle = "lightblue";
+            context.strokeStyle = "black";
+            context.font = "50px sans-serif";
+            context.fillText("Carregando...", 100, 200);
+            context.strokeText("Carregando...", 100, 200);
 
-            animacao.novoSprite(fundoEspaco);
-            animacao.novoSprite(fundoEstrelas);
-            animacao.novoSprite(fundoNuvens);
+            carregadas++;
+
+            let tamanhoTotal = 300;
+            let tamanho = carregadas / totalImagens * tamanhoTotal;
+            context.fillStyle = "red";
+            context.fillRect(100, 250, tamanho, 50);
+
+            context.restore();
+
+            if (carregadas == totalImagens) {
+
+                iniciarObjetos();
+                mostrarLinkJogar();
+
+            }
+
+        }
+
+        function iniciarObjetos() {
+
+            animacao = new Animacao(context);
+            teclado = new Teclado(document);
+            colisor = new Colisor();
+            espaco = new Fundo(context, imagens.espaco);
+            estrelas = new Fundo(context, imagens.estrelas);
+            nuvens = new Fundo(context, imagens.nuvens);
+            nave = new Nave(context, teclado, imagens.nave, imagens.explosao);
+            painel = new Painel(context, nave);
+
+            animacao.novoSprite(espaco);
+            animacao.novoSprite(estrelas);
+            animacao.novoSprite(nuvens);
+            animacao.novoSprite(painel);
             animacao.novoSprite(nave);
-
+        
             colisor.novoSprite(nave);
 
             animacao.novoProcessamento(colisor);
 
-            animacao.ligar();
+            configuracoesIniciais();
 
-            setInterval(novoOvni, 1000);
+        }
 
-            function novoOvni() {
+        function configuracoesIniciais() {
 
-                let ovni = new Ovni(context, animacao, colisor, imgOvni);
+            espaco.velocidade = 60;
+            estrelas.velocidade = 150;
+            nuvens.velocidade = 500;
 
-                ovni.velocidade = Math.floor(5 + Math.random() * (20 - 5 + 1));
-                ovni.x = Math.floor(Math.random() * (canvas.width - imgOvni.width + 1));
-                ovni.y = - imgOvni.height;
+            nave.posicionar();
+            nave.velocidade = 200;
 
-                animacao.novoSprite(ovni);
-                colisor.novoSprite(ovni);
+            nave.acabaramVidas = function() {
+
+                animacao.desligar();
+                gameOver();
+            
+            }
+
+            colisor.aoColidir = function(obj1, obj2) {
+
+                if (((obj1 instanceof Tiro) && (obj2 instanceof Ovni)) || ((obj1 instanceof Ovni) && (obj2 instanceof Tiro))) {
+
+                    painel.pontuacao += 10;
+
+                }
 
             }
 
-            teclado.disparou(ESPACO, function() {
-
-                nave.atirar();
-
-            });
+            criacaoInimigos();
 
         }
-   
+
+        function criacaoInimigos() {
+
+            criador = {
+
+                ultimoOvni: new Date().getTime(),
+
+                processar: function() {
+
+                    let agora = new Date().getTime();
+                    let decorrido = agora - this.ultimoOvni;
+
+                    if (decorrido > 1000) {
+
+                        novoOvni();
+                        this.ultimoOvni = agora;
+
+                    }
+
+                }
+
+            };
+
+            animacao.novoProcessamento(criador);
+
+        }
+
+        function novoOvni() {
+
+            let ovni = new Ovni(context, imagens.ovni, imagens.explosao);
+
+            ovni.velocidade = Math.floor(200 + Math.random() * (500 - 200 + 1));
+            ovni.x = Math.floor(Math.random() * (canvas.width - imagens.ovni.width + 1));
+            ovni.y = - imagens.ovni.height;
+
+            animacao.novoSprite(ovni);
+            colisor.novoSprite(ovni);
+
+        }
+
+        function pausarJogo() {
+
+            if (animacao.ligado) {
+
+                animacao.desligar();
+                ativarTiro(false);
+                musicaAcao.pause();
+
+                context.save();
+                context.fillStyle = "lightblue";
+                context.strokeStyle = "black";
+                context.font = "50px sans-serif";
+                context.fillText("Pausado", 160, 200);
+                context.strokeText("Pausado", 160, 200);
+                context.restore();
+
+            } else {
+
+                animacao.ligar();
+                musicaAcao.play();
+                ativarTiro(true);
+                criador.ultimoOvni = new Date().getTime();
+
+            }
+
+        }
+
+        function ativarTiro(ativar) {
+
+            if (ativar) {
+
+                teclado.disparou(ESPACO, function() {
+
+                    nave.atirar();
+
+                });
+
+            } else {
+
+                teclado.disparou(ESPACO, null);
+
+            }
+
+        }
+
+        function mostrarLinkJogar() {
+
+            document.getElementById("link_jogar").style.display = "block";
+
+        }
+
+        function iniciarJogo() {
+
+            document.getElementById("link_jogar").style.display = "none";
+            musicaAcao.play();
+            animacao.ligar();
+            
+            painel.pontuacao = 0;
+
+            ativarTiro(true);
+
+            teclado.disparou(ENTER, pausarJogo);
+
+            criador.ultimoOvni = new Date().getTime();
+
+        }
+        
+        function gameOver() {
+            
+            ativarTiro(false);
+            
+            teclado.disparou(ENTER, null);
+            
+            musicaAcao.pause();
+            musicaAcao.currentTime = 0.0;
+            
+            context.drawImage(imagens.espaco, 0, 0, canvas.width, canvas.height);
+            
+            context.save();
+            context.fillStyle = "white";
+            context.strokeStyle = "black";
+            context.font = "70px sans-serif";
+            context.fillText("GAME OVER", 40, 200);
+            context.strokeText("GAME OVER", 40, 200);
+            context.restore();
+            
+            mostrarLinkJogar();
+            
+            nave.vidasExtras = 3;
+            nave.posicionar();
+            animacao.novoSprite(nave);
+            colisor.novoSprite(nave);
+
+            removerInimigos();
+
+        }
+
+        function removerInimigos() {
+
+            for (var i in animacao.sprites) {
+
+                if (animacao.sprites[i] instanceof Ovni) {
+
+                    animacao.excluirSprite(animacao.sprites[i]);
+                
+                }
+
+            }
+
+        }
+
     </script>
 
 </body>

@@ -9,6 +9,8 @@ function Spritesheet(context, imagem, linhas, colunas) {
     this.linha = 0;
     this.coluna = 0;
 
+    this.fimDoCiclo = null;
+
 }
 
 Spritesheet.prototype = {
@@ -36,6 +38,12 @@ Spritesheet.prototype = {
         } else {
 
             this.coluna = 0;
+
+            if (this.fimDoCiclo) {
+
+                this.fimDoCiclo();
+
+            }
 
         }
 

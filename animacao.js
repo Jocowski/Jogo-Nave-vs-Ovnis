@@ -7,6 +7,8 @@ function Animacao(context) {
     this.processamentos = [];
     this.processamentosExcluir = [];
     this.ligado = false;
+    this.ultimoCiclo = 0;
+    this.decorrido = 0;
 
 }
 
@@ -33,6 +35,7 @@ Animacao.prototype = {
 
     ligar: function() {
 
+        this.ultimoCiclo = 0;
         this.ligado = true;
         this.proximoFrame();
 
@@ -51,6 +54,16 @@ Animacao.prototype = {
             return;
 
         }
+
+        let agora = new Date().getTime();
+
+        if (this.ultimoCiclo == 0) {
+
+            this.ultimoCiclo = agora;
+
+        }
+
+        this.decorrido = agora - this.ultimoCiclo;
 
         this.limparTela();
 
@@ -73,6 +86,8 @@ Animacao.prototype = {
         }
 
         this.processarExclusoes();
+
+        this.ultimoCiclo = agora;
 
         let animacao = this;
 
